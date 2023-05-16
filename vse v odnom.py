@@ -107,7 +107,7 @@ class Kapcha_Window0(QMainWindow):
 class Test_Window0(QWidget):
     def __init__(self):
         super().__init__()
-        self.resize(400, 200)
+        self.setFixedSize(640, 480)
         self.question_label = QLabel(self)
         self.answer1_radio = QRadioButton(self)
         self.answer2_radio = QRadioButton(self)
@@ -119,7 +119,7 @@ class Test_Window0(QWidget):
 
     def initUI(self):
         self.setGeometry(100, 100, 600, 400)
-        self.setWindowTitle("Тест")
+        self.setWindowTitle("Тест ")
 
         self.question_label.setGeometry(50, 50, 500, 100)
         self.question_label.setText('Вопрос 1: ...')
@@ -151,9 +151,27 @@ class Test_Window0(QWidget):
         else:
             self.question_label.setText('Ответ неверный!')
         
-#CSS сделать потом :^        
 
+
+
+      
 app = QApplication(sys.argv)
+#css
+app.setStyleSheet("""
+                  QWidget {
+        background-color: "lightblue";
+        color: "black";
+    }
+    QPushButton {
+        font-size: 16px;
+        background-color: "indigo";
+    }
+    QLineEdit {
+        background-color: "black";
+        color: "black";
+                  
+                  
+                  #""") 
 first_window = Main_Window()
 Second_window = Kapcha_Window0()
 Fourth_window = Test_Window0()
