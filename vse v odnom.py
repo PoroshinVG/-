@@ -1,28 +1,27 @@
 import sys
 import random
-from PyQt6.QtWidgets import QApplication,QWidget, QMainWindow, QLabel, QPushButton, QLineEdit, QVBoxLayout, QRadioButton
-from PyQt6.QtCore import QTimer, Qt  
+from PyQt6.QtWidgets import *
+from PyQt6.QtCore import * 
 
 #окно авторизации
-class Main_Window(QMainWindow):
+class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setFixedSize(320, 200)
         self.setWindowTitle("Войти")
 
         self.first_lbl = QLabel("Логин")
-       # self.first_lbl.setAlignment(Qt.Alignmentflag.Center)
         self.first_lineEdit = QLineEdit()
         self.first_lb2 = QLabel("Пароль")
         self.first_lineEdit2 = QLineEdit()
 
         self.btn = QPushButton("Вход")
         self.btn2 = QPushButton("Выход")
-        self.btn2.clicked.connect(self.exit)
         self.btn.clicked.connect(self.btn_clicked)
+        self.btn2.clicked.connect(self.exit)
         self.layout = QVBoxLayout()
         widget = QWidget()
-
+        #добавление виджетов
         self.layout.addWidget(self.first_lbl)
         self.layout.addWidget(self.first_lineEdit)
         self.layout.addWidget(self.first_lb2)
@@ -33,35 +32,32 @@ class Main_Window(QMainWindow):
         self.setCentralWidget(widget)
         self.layout.addWidget(self.btn)
         self.layout.addWidget(self.btn2)
-
+    #кнопки действия
     def btn_clicked(self):
-        self.window2 = Test_Window0()
-        if self.first_lineEdit.text() == "1" and self.first_lineEdit2.text() == "1":
+        self.window2 = TestWindow()
+        if self.first_lineEdit.text() == "user" and self.first_lineEdit2.text() == "user":
             self.window2.show()
-
+        
         else:
-            self.kapcha = Kapcha_Window0()
+            self.kapcha = KapchaWindow()
             self.kapcha.show()
             
     def exit(self):
         self.close()
 
 #капча
-#доделать модальное окно
-class Kapcha_Window0(QMainWindow):
+class KapchaWindow(QMainWindow):
         def __init__(self):
             super().__init__()
-            self.setWindowModality(Qt.WindowModality.ApplicationModal)
             self.setWindowTitle("Kapcha")
-            self.resize(640, 480)
+            self.resize(320, 240)
             self.rnd = random.randint(1111,9999)
             self.first_lbl = QLabel("введите цифры")
             self.first_lineEdit = QLineEdit()
             self.second_lbl = QLabel(str(self.rnd))
             self.btn = QPushButton("Continue")
-            self.btn.clicked.connect(self.btn_clicked)
-            
-#таймер
+            self.btn.clicked.connect(self.btn_clicked)        
+            #таймер
             self.timer_label = QLabel("Таймер:")
             self.timer = QTimer()
             self.timer_counter = 11
@@ -78,7 +74,7 @@ class Kapcha_Window0(QMainWindow):
             self.layout.addWidget(self.btn)
             self.setCentralWidget(widget)
             widget.setLayout(self.layout)
-            
+        #кнопка в два действия
         def btn_clicked(self):
             if self.first_lineEdit.text() == self.second_lbl.text():
                 self.close()
@@ -93,70 +89,220 @@ class Kapcha_Window0(QMainWindow):
         def timer_tick(self):
             self.timer.start(1000)
             self.timer_counter -= 1
-            self.timer_label.setText(f"Блокировка {self.timer_counter}")
+            self.timer_label.setText(f"Блокировка: {self.timer_counter}")
             
             if  self.timer_counter == 0:
                 self.timer.stop()
                 self.timer_counter = 4
                 self.btn.setEnabled(True)
                 rnd = random.randint(1111,9999)
-                self.second_lbl.setText(str(rnd))    
-            
-        
+                self.second_lbl.setText(str(rnd))      
 #тест
-class Test_Window0(QWidget):
+class TestWindow(QMainWindow):
     def __init__(self):
         super().__init__()
-        self.setFixedSize(640, 480)
-        self.question_label = QLabel(self)
-        self.answer1_radio = QRadioButton(self)
-        self.answer2_radio = QRadioButton(self)
-        self.answer3_radio = QRadioButton(self)
-        self.check_button = QPushButton(self)
-        self.check_button2 = QPushButton(self)
-        self.check_button3 = QPushButton(self)
-        self.initUI()
+        self.setWindowTitle("Самый лёгкий тест")
+        self.setFixedSize(600,240)
+        #инициалы 
+        self.name = QLabel("Введите ФИО")
+        self.edit = QLineEdit()
+        self.course = QLabel("Введите Группу")
+        self.edit1 = QLineEdit()
+        box = QVBoxLayout()
+        wid = QWidget()
+        wid.setLayout(box)
+        box.addWidget(self.name)
+        box.addWidget(self.edit)
+        box.addWidget(self.course)
 
-    def initUI(self):
-        self.setGeometry(100, 100, 600, 400)
-        self.setWindowTitle("Тест ")
-
-        self.question_label.setGeometry(50, 50, 500, 100)
-        self.question_label.setText('Вопрос 1: ...')
-        self.question_label.setWordWrap(True)
-
-        self.answer1_radio.setGeometry(100, 150, 400, 30)
-        self.answer1_radio.setText('...')
-        self.answer1_radio.setChecked(False)
-
-        self.answer2_radio.setGeometry(100, 200, 400, 30)
-        self.answer2_radio.setText('...')
-        self.answer2_radio.setChecked(False)
-
-        self.answer3_radio.setGeometry(100, 250, 400, 30)
-        self.answer3_radio.setText('...')
-        self.answer3_radio.setChecked(False)
-
-        self.check_button.setGeometry(200, 350, 200, 30)
-        self.check_button.setText('Проверить')
-        self.check_button2.setGeometry(0, 350, 250, 30)
-        self.check_button2.setText('Назад')
-        self.check_button3.setGeometry(400, 350, 250, 30)
-        self.check_button3.setText('Далее')
-        self.check_button.clicked.connect(self.checkAnswer)
+        box.addWidget(self.edit1)
+        #сам тест :3
+        lbl1 = QLabel("1. Что такое CS 1.6 ?")
+        rb1_0 = QRadioButton(text="Отдельная игра")
+        rb2_0 = QRadioButton(text="Чисто в компьютерном под пивко с мужиками покатать")
+        self.rb3_0 = QRadioButton(text="Мод для культовой игры Half life")
+        vbox = QVBoxLayout()
+        widget = QWidget()
+        widget.setLayout(vbox)
+        vbox.addWidget(lbl1)
+        vbox.addWidget(rb2_0)
+        vbox.addWidget(rb1_0)
+        vbox.addWidget(self.rb3_0)
         
-    def checkAnswer(self):
-        if self.answer2_radio.isChecked():
-            self.question_label.setText('Ответ верный!')
+        lbl2 = QLabel("2. Почему Valve пришлось почти полностью переделывать Half Life:2 ?")
+        self.rb1_1 = QRadioButton(text="Из-за взлома и утечки данных своих серверов")
+        rb2_1 = QRadioButton(text="Проект был не готов к выходу")
+        rb3_1 = QRadioButton(text="Гейб любит Макдональдс")
+        vbox2 = QVBoxLayout()
+        widget2 = QWidget()
+        widget2.setLayout(vbox2)
+        vbox2.addWidget(lbl2)
+        vbox2.addWidget(self.rb1_1)
+        vbox2.addWidget(rb2_1)
+        vbox2.addWidget(rb3_1)
+
+        lbl3 = QLabel("3. На каком движке делали проекты Valve ?")
+        rb1_2 = QRadioButton(text="CryEngine")
+        self.rb2_2 = QRadioButton(text="Source")
+        rb3_2 = QRadioButton(text="Не шарю")
+        vbox3 = QVBoxLayout()
+        widget3 = QWidget()
+        widget3.setLayout(vbox3)
+        vbox3.addWidget(lbl3)
+        vbox3.addWidget(rb1_2)
+        vbox3.addWidget(self.rb2_2)
+        vbox3.addWidget(rb3_2)
+
+        lbl4 = QLabel("4. Зачем Valve создаёт свою ОС на ядре Linux и выпускает свою продукцию и оптимизацию ?")
+        rb1_3 = QRadioButton(text="Ради денег")
+        rb2_3 = QRadioButton(text="Хочу Жрать")
+        self.rb3_3 = QRadioButton(text="Чтобы доказать что Linux тоже могёт и работает не хуже шиндовс")
+        vbox4 = QVBoxLayout()
+        widget4 = QWidget()
+        widget4.setLayout(vbox4)
+        vbox4.addWidget(lbl4)
+        vbox4.addWidget(rb1_3)
+        vbox4.addWidget(rb2_3)
+        vbox4.addWidget(self.rb3_3)
+
+        lbl5 = QLabel("5. Почему в этом году Valve решают разработать CS:2 ?")
+        rb1_4 = QRadioButton(text="Чтобы заработать больше денег с людей, которые будут тратить всю жизнь на эту игру")
+        self.rb2_4 = QRadioButton(text="Чтобы залатать баги и прочие дыры CS:GO и старой версии движка Source")
+        rb3_4 = QRadioButton(text="Чтобы порадовать фанатов новой частью")
+        vbox5 = QVBoxLayout()
+        widget5 = QWidget()
+        widget5.setLayout(vbox5)
+        vbox5.addWidget(lbl5)
+        vbox5.addWidget(rb1_4)
+        vbox5.addWidget(self.rb2_4)
+        vbox5.addWidget(rb3_4)
+
+        #табель результатов
+        lbl6 = QLabel("Готовы увидеть свои результаты?")
+        lbl6.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        rb3_5 = QPushButton("Да")
+        rb3_5.clicked.connect(self.activate_tab_v)
+        rb3_5.clicked.connect(self.result)
+        vbox6 = QVBoxLayout()
+        widget6 = QWidget()
+        widget6.setLayout(vbox6)
+        vbox6.addWidget(lbl6)
+        vbox6.addWidget(rb3_5)
+
+
+        lbl7 = QLabel("Результаты теста:")
+        self.v6 = QLabel()
+        self.v2 = QLabel()
+        self.v3 = QLabel()
+        self.v4 = QLabel()
+        self.v5 = QLabel()
+        self.res = QLabel()
+        vbox7 = QVBoxLayout()
+        widget7 = QWidget()
+        widget7.setLayout(vbox7)
+        vbox7.addWidget(lbl7)
+        vbox7.addWidget(self.v6)
+        vbox7.addWidget(self.v2)
+        vbox7.addWidget(self.v3)
+        vbox7.addWidget(self.v4)
+        vbox7.addWidget(self.v5)
+        vbox7.addWidget(self.res)
+        btn_save = QPushButton("Сохранить")
+        btn_save.clicked.connect(self.save)
+        vbox7.addWidget(btn_save)
+
+
+        pagelayout = QVBoxLayout()
+        self.button_layout = QHBoxLayout()
+        self.stacklayout = QStackedLayout()
+
+        pagelayout.addLayout(self.stacklayout)
+        pagelayout.addLayout(self.button_layout)
+
+        self.btnb = QPushButton("Назад")
+        self.btn = QPushButton("Вперёд")
+
+        self.btnb.clicked.connect(self.activate_tab_b)
+        self.btn.clicked.connect(self.activate_tab_v)
+        self.stacklayout.addWidget(wid)
+        self.button_layout.addWidget(self.btnb)
+        self.button_layout.addWidget(self.btn)
+        self.stacklayout.addWidget(widget)
+        self.stacklayout.addWidget(widget2)
+        self.stacklayout.addWidget(widget3)
+        self.stacklayout.addWidget(widget4)
+        self.stacklayout.addWidget(widget5)
+        self.stacklayout.addWidget(widget6)
+        self.stacklayout.addWidget(widget7)
+
+        widget = QWidget()
+        widget.setLayout(pagelayout)
+        self.setCentralWidget(widget)
+    #ответы
+    def activate_tab_v(self):
+        self.stacklayout.setCurrentIndex(self.stacklayout.currentIndex()+1)
+
+
+
+    def activate_tab_b(self):
+        self.stacklayout.setCurrentIndex(self.stacklayout.currentIndex()-1)
+
+    def result(self):
+        if self.rb3_0.isChecked():
+            self.v6.setText("1.Верно")
+            a = 1
         else:
-            self.question_label.setText('Ответ неверный!')
-        
+            self.v6.setText("1.Не верно")
+            a = 0
+        if self.rb1_1.isChecked():
+            self.v2.setText("2.Верно")
+            b = a + 1
+        else:
+            self.v2.setText("2.Не верно")
+            b = a
+        if self.rb2_2.isChecked():
+            self.v3.setText("3.Верно")
+            t = b + 1
+        else:
+            self.v3.setText("3.Не верно")
+            t = b
+        if self.rb3_3.isChecked():
+            self.v4.setText("4.Верно")
+            d = t + 1
+        else:
+            self.v4.setText("4.Не верно")
+            d = t
+        if self.rb2_4.isChecked():
+            self.v5.setText("5.Верно")
+            self.e = d + 1
+        else:
+            self.v5.setText("5.Не верно")
+            self.e = d
 
+        self.setFixedSize(600, 240)
+        self.res.setText(f"Ваш результат:{self.e}")
+    def save(self):
+        info = f"Фамилия и Имя:{self.edit.text()} \n"
+        cour = f"Группа:{self.edit1.text()} \n"
+        txt = f"Ваш результат:{self.v6.text()} \n"
+        txt1 = f"Ваш результат:{self.v2.text()} \n"
+        txt2 = f"Ваш результат:{self.v3.text()} \n"
+        txt3 = f"Ваш результат:{self.v4.text()} \n"
+        txt4 = f"Ваш результат:{self.v5.text()} \n"
+        txt5 = f"Ваш результат:{self.e} \n"
 
+        with open("results.txt", "w", encoding="utf-8") as f:
+            f.write(info)
+            f.write(cour)
+            f.write(txt)
+            f.write(txt1)
+            f.write(txt2)
+            f.write(txt3)
+            f.write(txt4)
+            f.write(txt5)
 
-      
 app = QApplication(sys.argv)
-#css
+#стиль
 app.setStyleSheet("""
                   QWidget {
         background-color: "lightblue";
@@ -172,8 +318,8 @@ app.setStyleSheet("""
                   
                   
                   #""") 
-first_window = Main_Window()
-Second_window = Kapcha_Window0()
-Fourth_window = Test_Window0()
+first_window = MainWindow()
+Second_window = KapchaWindow()
+Third_window = TestWindow()
 first_window.show()
 app.exec()
