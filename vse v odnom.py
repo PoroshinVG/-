@@ -278,6 +278,8 @@ class TestWindow(QMainWindow):
 
         self.setFixedSize(600, 240)
         self.res.setText(f"Ваш результат:{self.e}")
+        
+    #вывод в txt
     def save(self):
         info = f"ФИО:{self.edit.text()} \n"
         txt = f"{self.v6.text()} \n"
